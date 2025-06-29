@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "🛠️ Terraform Style Guide"
+    url: "https://developer.hashicorp.com/terraform/language/style"
+    about: "Official guide for Terraform style and best practices"
+
+  - name: "🤖 Terraform MCP Server"
+    url: "https://github.com/hashicorp/terraform-mcp-server"
+    about: "Terraform MCP Server for managing Terraform modules"
+
+  - name: "🔒 Private Module Registry"
+    url: "https://developer.hashicorp.com/validated-designs/terraform-operating-guides-standardization/private-registry"
+    about: "Private module registry for Terraform modules"

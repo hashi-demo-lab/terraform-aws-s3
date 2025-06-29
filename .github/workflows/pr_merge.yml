@@ -1,0 +1,84 @@
+name: Module Release
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  Module-Version-Release:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: get-labels
+      uses: snnaplab/get-labels-action@v1
+      
+    - if: contains(fromJSON(env.LABELS), 'semver:major')
+      id: major-release
+      run: | 
+       echo "major release"
+       echo "release=major" >> $GITHUB_OUTPUT
+       
+    - if: contains(fromJSON(env.LABELS), 'semver:minor')
+      id: minor-release
+      run: | 
+       echo "minor release"
+       echo "release=minor" >> $GITHUB_OUTPUT
+       
+    - if: contains(fromJSON(env.LABELS), 'semver:patch')
+      id: patch-release
+      run: | 
+       echo "patch release"
+       echo "release=patch" >> $GITHUB_OUTPUT
+
+    - name: Set Release Type
+      id: set-release-type
+      run: |
+        if [ -n "${{ steps.major-release.outputs.release }}" ]; then
+          echo "RELEASE_TYPE=${{ steps.major-release.outputs.release }}" >> $GITHUB_ENV
+        elif [ -n "${{ steps.minor-release.outputs.release }}" ]; then
+          echo "RELEASE_TYPE=${{ steps.minor-release.outputs.release }}" >> $GITHUB_ENV
+        elif [ -n "${{ steps.patch-release.outputs.release }}" ]; then
+          echo "RELEASE_TYPE=${{ steps.patch-release.outputs.release }}" >> $GITHUB_ENV
+        fi
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: install-python-dep
+      run: pip install -r ./.github/workflows/requirements.txt
+
+    - name: get-module-version
+      id: new-version
+      run: |
+        PYTHON_OUT="$(python ./.github/workflows/get_module_version.py)"
+        echo "python_output=$PYTHON_OUT"
+        echo "python_output=$PYTHON_OUT" >> $GITHUB_OUTPUT
+      env:
+        TFE_HOSTNAME: 'app.terraform.io'
+        TFE_ORG: ${{ vars.TFE_ORG }}
+        TFE_MODULE: ${{ vars.TFE_MODULE }}
+        TFE_PROVIDER: ${{ vars.TFE_PROVIDER }}
+        TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+
+    - name: publish-module-version
+      if: ${{ steps.new-version.outputs.python_output }}
+      id: publish-module
+      run: |
+        PYTHON_OUT="$(python ./.github/workflows/publish_module_version.py)"
+        echo "python_output=$PYTHON_OUT"
+      env:
+        TFE_HOSTNAME: 'app.terraform.io'
+        TFE_ORG: ${{ vars.TFE_ORG }}
+        TFE_MODULE: ${{ vars.TFE_MODULE }}
+        TFE_PROVIDER: ${{ vars.TFE_PROVIDER }}
+        TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        COMMIT_SHA: ${{ github.sha }}
+        NEW_VERSION: ${{ steps.new-version.outputs.python_output }}
+
+        

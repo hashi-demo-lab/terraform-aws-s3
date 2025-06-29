@@ -1,0 +1,44 @@
+name: 'Module_Validate'
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions: write-all
+
+
+jobs:
+  terraform-docs:
+    name: 'Validte_Module'
+    runs-on: ubuntu-latest
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        
+    - uses: mheap/github-action-required-labels@v5
+      with:
+        mode: exactly
+        count: 1
+        labels: "semver:patch, semver:minor, semver:major"
+          
+    # terraform-docs
+    - name: Render terraform docs inside the README.md and push changes back to PR branch
+      uses: terraform-docs/gh-actions@v1.0.0
+      with:
+        working-dir: .
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
+
+
+
