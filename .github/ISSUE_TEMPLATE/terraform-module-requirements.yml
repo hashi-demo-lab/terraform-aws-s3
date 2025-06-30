@@ -8,9 +8,9 @@ body:
     attributes:
       value: |
         # Terraform Module Requirements
-        
+
         Use this template to capture comprehensive technical and security requirements for new Terraform modules.
-        
+
         **📖 Reference Documentation:**
         - [Module Development Workflow](/.claude/commands/tf-module-create-new-from-template.md)
         - [Terraform Planning Framework](/.claude/CLAUDE.md)
@@ -55,7 +55,6 @@ body:
       placeholder: |
         - Business problem this module solves
         - Expected outcomes
-        - Success criteria
     validations:
       required: true
 
@@ -193,17 +192,3 @@ body:
         - Migration considerations
         - Special architectural requirements
         - Team or organizational constraints
-
-  - type: checkboxes
-    id: acceptance_criteria
-    attributes:
-      label: "✅ Acceptance Criteria"
-      description: "Criteria that must be met for this module to be considered complete"
-      options:
-        - label: "Module follows terraform-<PROVIDER>-<NAME> naming convention"
-        - label: "All security requirements implemented and verified"
-        - label: "Module passes all quality gates"
-        - label: "Documentation is complete and accurate"
-        - label: "Examples demonstrate common use cases"
-        - label: "Module is published to internal/public registry"
-        - label: "Team training completed if required"
