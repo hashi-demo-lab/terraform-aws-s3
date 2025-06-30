@@ -4,7 +4,7 @@
 **Date**: 2025-06-30  
 **Module**: terraform-aws-s3  
 **AWS Provider**: ~> 6.0  
-**GitHub Issue**: [#4](https://github.com/hashi-demo-lab/terraform-aws-s3/issues/4)
+**GitHub Issue**: [#5](https://github.com/hashi-demo-lab/terraform-aws-s3/issues/5)
 
 ## Executive Summary
 
@@ -23,6 +23,13 @@ This document outlines the comprehensive architecture design for the terraform-a
 ### Resource Architecture
 
 ```mermaid
+---
+config:
+  theme: neo
+  flowchart:
+    curve: basis
+  layout: fixed
+---
 graph TB
     subgraph "Core Module"
         A[aws_s3_bucket] --> B[aws_s3_bucket_public_access_block]
