@@ -1,0 +1,38 @@
+---
+config:
+  theme: neo
+  flowchart:
+    curve: basis
+  layout: fixed
+---
+graph TB
+    subgraph "Core Module"
+        A[aws_s3_bucket] --> B[aws_s3_bucket_public_access_block]
+        A --> C[aws_s3_bucket_server_side_encryption_configuration]
+        A --> D[aws_s3_bucket_versioning]
+        A --> E[aws_s3_bucket_logging]
+    end
+    
+    subgraph "Optional Features"
+        A --> F[aws_s3_bucket_lifecycle_configuration]
+        A --> G[aws_s3_bucket_cors_configuration]
+        A --> H[aws_s3_bucket_website_configuration]
+        A --> I[aws_s3_bucket_notification]
+        A --> J[aws_s3_bucket_replication_configuration]
+        A --> K[aws_s3_bucket_object_lock_configuration]
+        A --> L[aws_s3_bucket_policy]
+    end
+    
+    subgraph "Supporting Resources"
+        M[aws_kms_key] --> C
+        N[aws_iam_role] --> J
+        O[aws_s3_bucket - target] --> E
+    end
+
+    classDef core fill:#1e40af,stroke:#1e3a8a,color:#fff,stroke-width:2px,font-weight:bold
+    classDef optional fill:#059669,stroke:#047857,color:#fff,stroke-width:2px,font-weight:bold
+    classDef supporting fill:#f59e0b,stroke:#d97706,color:#fff,stroke-width:2px,font-weight:bold
+
+    class A,B,C,D,E core
+    class F,G,H,I,J,K,L optional
+    class M,N,O supporting
